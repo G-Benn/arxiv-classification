@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import beautifulsoup4 as bs
+import bs4 as bs
 import urllib3 as ul
 import re
 
@@ -18,46 +18,57 @@ Comments / TODOs, etc
 
 
 def construct_retrieval_url(paper_id,
-							base_url="http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:###&metadataPrefix=arXiv",
-							sub_chars="###"
-							):
-	"""
-	Given the ID of a paper, sub it into the URL.
-	:param paper_id : The ID of a paper, in the standard arXiv format. This should have been parsed from the filename in the format YYMM.##### (.txt).
-	:param base_url : The base URL used to access arXiv metadata servers.
-	:param sub_chars : The chars from the base_url that need to be substituted out.
-	:returns retrieval_url: The url that we can use to retrieve the relevant metadata.
-	"""
-	pass
-	
-def parse_out_metadata(url_to_read):
-	"""
-	Given the URL, parse out all of the metadata that we want access to.
-	:param url_to_read : The URL that we'll refer to.
-	:returns paper_id : The id of the paper
-	:returns all_categories: list. All of the categories that a paper belongs in.
-	:returns authors: list. All the authors credited for the paper.
-	:returns abstract: string. The abstract of the paper.
-	:returns title: string. The title of the paper.
-	"""
-	pass
-	
-def construct_initial_df():
-	"""
-	Create the initial df that we'll append each entry to.
-	Columns: paper_id, text, abstract, categories, authors, title
-	"""
-	pass
+                            base_url="http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:###&metadataPrefix=arXivRaw",
+                            sub_chars="###"
+                            ):
+    """
+    Given the ID of a paper, sub it into the URL.
+    :param paper_id : The ID of a paper, in the standard arXiv format. This should have been parsed from the filename in the format YYMM.##### (.txt).
+    :param base_url : The base URL used to access arXiv metadata servers.
+    :param sub_chars : The chars from the base_url that need to be substituted out.
+    :returns retrieval_url: The url that we can use to retrieve the relevant metadata.
+    """
+    retr_url = base_url.replace(sub_chars, paper_id)
+    return retr_url
 
-def save_out(df, base_filename, pickle=True, hdf=True):
-	"""
-	given the df and filename, save out to both a pickle and hdf file. This ensures that we don't lose access to the data at any point.
-	"""
-	pass
+
+def parse_out_metadata(url_to_read):
+    """
+    Given the URL, parse out all of the metadata that we want access to.
+    :param url_to_read : The URL that we'll refer to.
+    :returns paper_id : The id of the paper
+    :returns all_categories: list. All of the categories that a paper belongs in.
+    :returns authors: list. All the authors credited for the paper.
+    :returns abstract: string. The abstract of the paper.
+    :returns title: string. The title of the paper.
+    """
+    pass
+
+
+def construct_initial_df():
+    """
+    Create the initial df that we'll append each entry to.
+    Columns: paper_id, text, abstract, categories, authors, title
+    """
+    pass
+
+
+def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
+    """
+    given the df and filename, save out to both a pickle and hdf file. This ensures that we don't lose access to the data at any point.
+    """
+    if pickle:
+        print("Pickling")
+        df.to_pickle(base_filename+".pkl", compression="gzip")
+    if hdf:
+        print("hdf-ing")
+        df.to_hdf(base_filename+".h5", 'table')
+    if ~pickle and ~hdf:
+        print("Didn't save out anywhere!")
+    pass
+
 
 def create_int_id(str_id):
-	"""Given an ID in the form of YYMM.####(#), returns an int version as a key"""
-	pass
-
-	
-	
+    """Given an ID in the form of YYMM.####(#), returns an int version as a key"""
+    int_str = str_id.replace(".", "")
+    return int(int_str)
