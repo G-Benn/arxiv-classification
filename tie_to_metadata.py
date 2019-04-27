@@ -1,8 +1,6 @@
-import numpy as np
 import pandas as pd
-import bs4 as bs
-import urllib3 as ul
-import re
+from bs4 import BeautifulSoup
+import requests
 
 """
 A piece of code that ties together the full text of a paper from Arxiv to its metadata like author, abstract, field/subfield, etc
@@ -42,7 +40,25 @@ def parse_out_metadata(url_to_read):
     :returns abstract: string. The abstract of the paper.
     :returns title: string. The title of the paper.
     """
-    pass
+    raw_html = requests.get(url_to_read)
+
+    soup = BeautifulSoup(raw_html.text, 'html.parser')
+    print(soup.prettify())  # remove in final, for testing
+
+    paper_id = soup.id
+    all_categories = soup.categories
+    categories_list = all_categories.split()
+    authors = soup.authors
+    abstract = soup.abstract
+    title = soup.title
+
+    print("paper ID: ", paper_id)
+    print("categories: ", categories_list)
+    print("Authors: ", authors)
+    print("Abstract: ", abstract)
+    print("Title: ", title)
+
+    return paper_id, categories_list, authors, abstract, title
 
 
 def construct_initial_df():
