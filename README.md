@@ -4,6 +4,8 @@ Projects to be attempted with this data:
     Clustering analysis and relation graph of each paper category
     NLP creation of paper abstract from full text of a paper
     Can we predict the category(ies) of a paper (with predicted likliehood) with the text?
+    Basic analysis of who (category) uploads the most, has most authors, etc
+        Most likely to just import a pdf as their final paper (annoying me)
 Current months of files downloaded:
 1812
 1811
