@@ -2,6 +2,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import requests
 import os
+import time
 
 """
 A piece of code that ties together the full text of a paper from Arxiv to its metadata like author, abstract, field/subfield, etc
@@ -47,28 +48,34 @@ def parse_out_metadata(url_to_read):
     soup = BeautifulSoup(raw_html.text, 'html.parser')
     print(soup.prettify())  # remove in final, for testing
 
-    paper_id = soup.id
-    all_categories = soup.categories
+    paper_id = soup.id.string
+    all_categories = soup.categories.string
     categories_list = all_categories.split()
-    authors = soup.authors
-    abstract = soup.abstract
-    title = soup.title
+    authors = soup.authors.string
+    abstract = soup.abstract.string
+    title = soup.title.string
 
-    print("paper ID: ", paper_id)
-    print("categories: ", categories_list)
-    print("Authors: ", authors)
-    print("Abstract: ", abstract)
-    print("Title: ", title)
-
+    print("paper ID:", paper_id)
+    #print(all_categories)
+    print("categories:", categories_list)
+    print("Authors:", authors)
+    print("Abstract:", abstract)
+    print("Title:", title)
+    
     return paper_id, categories_list, authors, abstract, title
 
 
-def construct_initial_df():
+def construct_initial_dfs():
     """
-    Create the initial df that we'll append each entry to.
+    Create the initial dfs that we'll append each entry to.
+    3 dfs, to be separately joined later on the int_id
     Columns: paper_id, text, abstract, categories, authors, title
     """
-    pass
+    meta_df = pd.DataFrame(columns=['int_paper_id','paper_id','abstract','authors','title'], index=['int_paper_id'])
+    categories_df = pd.DataFrame(columns=['int_paper_id','categories'], index=['int_paper_id'])
+    text_df = pd.DataFrame(columns=['int_paper_id','text'], index=['int_paper_id'])
+    
+    return meta_df, categories_df, text_df
 
 
 def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
@@ -104,7 +111,8 @@ if __name__ == "__main__":
         paper_id = os.path.splitext(file)[0]
         
         retr_url = construct_retrieval_url(paper_id)
-        print(retr_url)
         
+        web_paper_id, categories, authors, abstract, title = parse_out_metadata(retr_url)
+        time.sleep(3) # We don't want to hammer arxiv, so wait 3 seconds between each retrieval
         idx = idx + 1
 
