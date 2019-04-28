@@ -13,7 +13,7 @@ Comments / TODOs, etc
 - Should I save out in multiple formats? - yes, and multiple dfs - it's a long build
 - Should I separate out all categories into a (sparse) df? Yes, encoding easier. subcategories may be more expensive
 - Should I use both the OG paper_id (YYMM.####(#) and concat int - Y for performance as join key 
-- 
+- Iteratively creating catagories_df every run with unique column title of each category that will get appended (part of one-hot encoding)
 """
 categories_with_desc = {
     "astro-ph.GA" : "Astrophysics of Galaxies",
@@ -204,11 +204,12 @@ def parse_out_metadata(url_to_read):
     print("paper ID:", paper_id)
     #print(all_categories)
     print("categories:", categories_list)
+    print("num_categories:", len(categories_list))
     print("Authors:", authors)
     print("Abstract:", abstract)
     print("Title:", title)
     
-    return paper_id, categories_list, authors, abstract, title
+    return paper_id, categories_list, len(categories_list), authors, abstract, title
 
 
 def construct_initial_dfs():
@@ -218,7 +219,7 @@ def construct_initial_dfs():
     Columns: paper_id, text, abstract, categories, authors, title
     """
     meta_df = pd.DataFrame(columns=['int_paper_id','paper_id','abstract','authors','title'], index=['int_paper_id'])
-    categories_df = pd.DataFrame(columns=['int_paper_id','categories'], index=['int_paper_id'])
+    categories_df = pd.DataFrame(columns=['int_paper_id','num_categories','categories'], index=['int_paper_id'], dtype='object')
     text_df = pd.DataFrame(columns=['int_paper_id','text'], index=['int_paper_id'])
     
     return meta_df, categories_df, text_df
@@ -251,14 +252,48 @@ if __name__ == "__main__":
     number_files = len(filelist)
     print(number_files, " to process!")
     
+    meta_df, categories_df, text_df = construct_initial_dfs()
+    
     idx = 1
-    for file in [f for f in os.listdir(os.getcwd()) if f.endswith('.txt')]:
-        print("On file", idx , file)
-        paper_id = os.path.splitext(file)[0]
+    for filename in [f for f in os.listdir(os.getcwd()) if f.endswith('.txt')]:
+        print("On file", idx , filename)
+        paper_id = os.path.splitext(filename)[0]
+        
+        opened_file = open(filename, mode='r', encoding="utf8")
+        full_text = opened_file.read()
+        opened_file.close()
         
         retr_url = construct_retrieval_url(paper_id)
         
-        web_paper_id, categories, authors, abstract, title = parse_out_metadata(retr_url)
-        time.sleep(3) # We don't want to hammer arxiv, so wait 3 seconds between each retrieval
+        web_paper_id, categories, num_categories, authors, abstract, title = parse_out_metadata(retr_url)
+        
+        int_paper_id = create_int_id(web_paper_id)
+        
+        meta_dict = { 
+            'int_paper_id': int_paper_id,
+            'paper_id': web_paper_id,
+            'abstract': abstract,
+            'authors': authors,
+            'title': title
+        }
+        meta_df = meta_df.append(meta_dict, ignore_index=True)
+        
+        categories_dict = {
+            'int_paper_id': int_paper_id,
+            'num_categories': num_categories,
+            'categories': categories
+        }
+        categories_df = categories_df.append(categories_dict, ignore_index=True)
+        
+        text_dict = {
+            'int_paper_id': int_paper_id,
+            'text': full_text
+        }
+        text_df = text_df.append(text_dict, ignore_index=True)
+        #time.sleep(3) # We don't want to hammer arxiv, so wait 3 seconds between each retrieval
+        
+        # TODO redo categories 
+        
+        
         idx = idx + 1
 
