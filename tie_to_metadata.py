@@ -294,6 +294,9 @@ if __name__ == "__main__":
         
         # TODO redo categories 
         
+        save_out(meta_df, "meta_df_test")
+        save_out(categories_df, "categories_df_test")
+        save_out(text_df, "text_df_test")
         
         idx = idx + 1
 
