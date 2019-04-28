@@ -1,6 +1,7 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
+import os
 
 """
 A piece of code that ties together the full text of a paper from Arxiv to its metadata like author, abstract, field/subfield, etc
@@ -30,6 +31,7 @@ def construct_retrieval_url(paper_id,
     return retr_url
 
 
+# TODO Test this guy
 def parse_out_metadata(url_to_read):
     """
     Given the URL, parse out all of the metadata that we want access to.
@@ -88,3 +90,21 @@ def create_int_id(str_id):
     """Given an ID in the form of YYMM.####(#), returns an int version as a key"""
     int_str = str_id.replace(".", "")
     return int(int_str)
+
+
+if __name__ == "__main__":
+    print("Executing test sequence!")
+    filelist = os.listdir(os.getcwd())
+    number_files = len(filelist)
+    print(number_files, " to process!")
+    
+    idx = 1
+    for file in [f for f in os.listdir(os.getcwd()) if f.endswith('.txt')]:
+        print("On file", idx , file)
+        paper_id = os.path.splitext(file)[0]
+        
+        retr_url = construct_retrieval_url(paper_id)
+        print(retr_url)
+        
+        idx = idx + 1
+
