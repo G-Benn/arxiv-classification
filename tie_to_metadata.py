@@ -234,10 +234,9 @@ def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
         df.to_pickle(base_filename+".pkl", compression="gzip")
     if hdf:
         print("hdf-ing")
-        df.to_hdf(base_filename+".h5", 'table')
-    if ~pickle and ~hdf:
+        df.to_hdf(base_filename+".h5", 'table', complevel=7)
+    if not pickle and not hdf:
         print("Didn't save out anywhere!")
-    pass
 
 
 def create_int_id(str_id):
@@ -294,9 +293,8 @@ if __name__ == "__main__":
         
         # TODO redo categories 
         
-        save_out(meta_df, "meta_df_test")
-        save_out(categories_df, "categories_df_test")
-        save_out(text_df, "text_df_test")
-        
         idx = idx + 1
+    save_out(meta_df, "meta_df_test")
+    save_out(categories_df, "categories_df_test")
+    save_out(text_df, "text_df_test")
 
