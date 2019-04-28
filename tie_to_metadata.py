@@ -15,7 +15,46 @@ Comments / TODOs, etc
 - Should I use both the OG paper_id (YYMM.####(#) and concat int - Y for performance as join key 
 - 
 """
+categories_with_desc = {
+    "astro-ph.GA" : "Astrophysics of Galaxies",
+    "astro-ph.CO" : "Cosmology and Nongalactic Astrophysics",
+    "astro-ph.EP" : "Earth and Planetary Astrophysics",
+    "astro-ph.HE" : "High Energy Astrophysical Phenomena",
+    "astro-ph.IM" : "Instrumentation and Methods for Astrophysics",
+    "astro-ph.SR" : "Solar and Stellar Astrophysics",
+    cond-mat.dis-nn : Disordered Systems and Neural Networks
+    cond-mat.mtrl-sci : Materials Science
+    cond-mat.mes-hall : Mesoscale and Nanoscale Physics
+    cond-mat.other : Other Condensed Matter
+    cond-mat.quant-gas : Quantum Gases
+    cond-mat.soft : Soft Condensed Matter
+    cond-mat.stat-mech : Statistical Mechanics
+    cond-mat.str-el : Strongly Correlated Electrons
+    cond-mat.supr-con : Superconductivity
+    physics.acc-ph : Accelerator Physics
+    physics.app-ph : Applied Physics
+    physics.ao-ph : Atmospheric and Oceanic Physics
+    physics.atom-ph : Atomic Physics
+    physics.atm-clus : Atomic and Molecular Clusters
+    physics.bio-ph : Biological Physics
+    physics.chem-ph : Chemical Physics
+    physics.class-ph : Classical Physics
+    physics.comp-ph : Computational Physics
+    physics.data-an : Data Analysis, Statistics and Probability
+    physics.flu-dyn : Fluid Dynamics
+    physics.gen-ph : General Physics
+    physics.geo-ph : Geophysics
+    physics.hist-ph : History and Philosophy of Physics
+    physics.ins-det : Instrumentation and Detectors
+    physics.med-ph : Medical Physics
+    physics.optics : Optics
+    physics.ed-ph : Physics Education
+    physics.soc-ph : Physics and Society
+    physics.plasm-ph : Plasma Physics 
+    physics.pop-ph : Popular Physics
+    physics.space-ph : Space Physics
 
+}
 
 def construct_retrieval_url(paper_id,
                             base_url="http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:###&metadataPrefix=arXivRaw",
