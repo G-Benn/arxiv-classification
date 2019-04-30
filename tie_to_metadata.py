@@ -215,14 +215,15 @@ def parse_out_metadata(url_to_read):
 def construct_initial_dfs():
     """
     Create the initial dfs that we'll append each entry to.
-    3 dfs, to be separately joined later on the int_id
-    Columns: paper_id, text, abstract, categories, authors, title
+    4 dfs, to be separately joined later on the int_paper_id
+    Columns: paper_id, text, abstract, categories, expanded_categories, authors, title
     """
     meta_df = pd.DataFrame(columns=['int_paper_id','paper_id','abstract','authors','title'], index=['int_paper_id'])
     categories_df = pd.DataFrame(columns=['int_paper_id','num_categories','categories'], index=['int_paper_id'], dtype='object')
     text_df = pd.DataFrame(columns=['int_paper_id','text'], index=['int_paper_id'])
+    expanded_categories_df = pd.DataFrame(columns=['int_paper_id'], index = ['int_paper_id'])
     
-    return meta_df, categories_df, text_df
+    return meta_df, categories_df, expanded_categories_df text_df
 
 
 def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
@@ -234,7 +235,7 @@ def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
         df.to_pickle(base_filename+".pkl", compression="gzip")
     if hdf:
         print("hdf-ing")
-        df.to_hdf(base_filename+".h5", 'table', complevel=7)
+        df.to_hdf(base_filename+".h5", 'table', complevel=9)
     if not pickle and not hdf:
         print("Didn't save out anywhere!")
 
@@ -251,7 +252,7 @@ if __name__ == "__main__":
     number_files = len(filelist)
     print(number_files, " to process!")
     
-    meta_df, categories_df, text_df = construct_initial_dfs()
+    meta_df, categories_df, expanded_categories_df, text_df = construct_initial_dfs()
     
     idx = 1
     for filename in [f for f in os.listdir(os.getcwd()) if f.endswith('.txt')]:
@@ -267,7 +268,8 @@ if __name__ == "__main__":
         web_paper_id, categories, num_categories, authors, abstract, title = parse_out_metadata(retr_url)
         
         int_paper_id = create_int_id(web_paper_id)
-        
+
+        # TODO add in steps to allow index to be used for speed(?)
         meta_dict = { 
             'int_paper_id': int_paper_id,
             'paper_id': web_paper_id,
@@ -283,6 +285,10 @@ if __name__ == "__main__":
             'categories': categories
         }
         categories_df = categories_df.append(categories_dict, ignore_index=True)
+        
+        expanded_categories_dict = dict.fromkeys(categories, 1)
+        expanded_categories_dict['int_paper_id'] = int_paper_id
+        expanded_categories_df = expanded_categories_df.append(expanded_categories_dict, ignore_index=True)
         
         text_dict = {
             'int_paper_id': int_paper_id,
