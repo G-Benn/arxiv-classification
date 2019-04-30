@@ -232,7 +232,7 @@ def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
     """
     if pickle:
         print("Pickling")
-        df.to_pickle(base_filename+".pkl", compression="gzip")
+        df.to_pickle(base_filename+".pkl")
     if hdf:
         print("hdf-ing")
         df.to_hdf(base_filename+".h5", 'table', complevel=9)
