@@ -223,7 +223,7 @@ def construct_initial_dfs():
     text_df = pd.DataFrame(columns=['int_paper_id','text'], index=['int_paper_id'])
     expanded_categories_df = pd.DataFrame(columns=['int_paper_id'], index = ['int_paper_id'])
     
-    return meta_df, categories_df, expanded_categories_df text_df
+    return meta_df, categories_df, expanded_categories_df, text_df
 
 
 def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
@@ -302,5 +302,6 @@ if __name__ == "__main__":
         idx = idx + 1
     save_out(meta_df, "meta_df_test")
     save_out(categories_df, "categories_df_test")
+    save_out(expanded_categories_df, "expanded_categories_df_test")
     save_out(text_df, "text_df_test")
 
