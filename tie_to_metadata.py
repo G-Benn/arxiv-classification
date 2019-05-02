@@ -222,8 +222,9 @@ def construct_initial_dfs():
     categories_df = pd.DataFrame(columns=['int_paper_id','num_categories','categories'], index=['int_paper_id'], dtype='object')
     text_df = pd.DataFrame(columns=['int_paper_id','text'], index=['int_paper_id'])
     expanded_categories_df = pd.DataFrame(columns=['int_paper_id'], index = ['int_paper_id'])
+    reduced_categories_df = pd.DataFrame(columns=['int_paper_id'], index = ['int_paper_id'])
     
-    return meta_df, categories_df, expanded_categories_df, text_df
+    return meta_df, categories_df, reduced_categories_df, expanded_categories_df, text_df
 
 
 def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
@@ -252,7 +253,7 @@ if __name__ == "__main__":
     number_files = len(filelist)
     print(number_files, " to process!")
     
-    meta_df, categories_df, expanded_categories_df, text_df = construct_initial_dfs()
+    meta_df, categories_df, reduced_categories_df, expanded_categories_df, text_df = construct_initial_dfs()
     
     idx = 1
     for filename in [f for f in os.listdir(os.getcwd()) if f.endswith('.txt')]:
@@ -260,7 +261,10 @@ if __name__ == "__main__":
         paper_id = os.path.splitext(filename)[0]
         
         opened_file = open(filename, mode='r', encoding="utf8")
-        full_text = opened_file.read()
+        try:
+            full_text = opened_file.read()
+        except UnicodeDecodeError as e:
+            continue # Just skip the file and forget about it
         opened_file.close()
         
         retr_url = construct_retrieval_url(paper_id)
@@ -286,6 +290,12 @@ if __name__ == "__main__":
         }
         categories_df = categories_df.append(categories_dict, ignore_index=True)
         
+        reduced_categories = [i.split('.')[0] for i in categories]
+        
+        reduced_categories_dict = dict.fromkeys(reduced_categories, 1)
+        reduced_categories_dict['int_paper_id'] = int_paper_id
+        reduced_categories_df = reduced_categories_df.append(reduced_categories_dict, ignore_index=True)
+        
         expanded_categories_dict = dict.fromkeys(categories, 1)
         expanded_categories_dict['int_paper_id'] = int_paper_id
         expanded_categories_df = expanded_categories_df.append(expanded_categories_dict, ignore_index=True)
@@ -302,6 +312,7 @@ if __name__ == "__main__":
         idx = idx + 1
     save_out(meta_df, "meta_df_test")
     save_out(categories_df, "categories_df_test")
+    save_out(reduced_categories_df, "reduced_categories_df_test")
     save_out(expanded_categories_df, "expanded_categories_df_test")
     save_out(text_df, "text_df_test")
 
