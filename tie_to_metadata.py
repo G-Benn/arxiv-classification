@@ -264,6 +264,8 @@ if __name__ == "__main__":
         try:
             full_text = opened_file.read()
         except UnicodeDecodeError as e:
+            print("Unicode decoding error - prooably latin-1 instead of utf-8. Ignoring.")
+            # TODO Modify so that when this fails we swap to latin-1, try that, then give up
             continue # Just skip the file and forget about it
         opened_file.close()
         
