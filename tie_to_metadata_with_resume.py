@@ -99,7 +99,7 @@ def divide_chunks(l, n):
 
 parser = argparse.ArgumentParser(description='Either run the initial setup or complete a main run, pickin up where you left off.')
 
-parser.add_argument('--setup', dest='setup',
+parser.add_argument('--setup',action='store_true',
                    help='Run the initial setup of the full chunks to run')
                    
 args = parser.parse_args()
@@ -118,7 +118,7 @@ with open ('remaining_chunks.pkl', 'rb') as fp:
     print('opening chunks')
     all_chunks = pickle.load(fp)
 
-print('First file', all_chunks[0])
+print('First set of files', all_chunks[0])
 
 # Grab from remaining_chunks, which will be made manually once separately
 while all_chunks: # While all_chunks is not empty 
