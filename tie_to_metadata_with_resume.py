@@ -191,6 +191,8 @@ while all_chunks: # While all_chunks is not empty
         print('updating chunks')
         pickle.dump(all_chunks, fp)
 print('Completely done!')
+print('deleting remaining_chunks.pkl')
+os.remove('remaining_chunks.pkl')
 
 
 
