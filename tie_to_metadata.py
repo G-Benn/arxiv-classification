@@ -256,6 +256,7 @@ if __name__ == "__main__":
     meta_df, categories_df, reduced_categories_df, expanded_categories_df, text_df = construct_initial_dfs()
     
     idx = 1
+    idx_start = 1
     for filename in [f for f in os.listdir(os.getcwd()) if f.endswith('.txt')]:
         print("On file", idx , filename)
         paper_id = os.path.splitext(filename)[0]

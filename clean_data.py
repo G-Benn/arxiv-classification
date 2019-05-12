@@ -20,6 +20,7 @@ categories_df.drop(categories_df.index[0], inplace=True)
 reduced_categories_df.drop(reduced_categories_df.index[0], inplace=True)
 expanded_categories_df.drop(expanded_categories_df.index[0], inplace=True)
 
+
 # Make sure the categories are encoded correctly
 reduced_categories_df.fillna(0, inplace=True)
 reduced_categories_df = reduced_categories_df.astype(int, inplace=True)
@@ -31,6 +32,7 @@ REPLACE_BY_SPACE_RE = re.compile('[/(){}\[\]\|@,;]')
 TRIM_SPACE_RE = re.compile(r'\s+')
 BAD_SYMBOLS_RE = re.compile('[^0-9a-z #+_]')
 STOPWORDS = set(stopwords.words('english'))
+CAT_TO_REPLACE_RE = re.compile(r'\.|-')
 
 
 def clean_text(text):
@@ -46,12 +48,16 @@ def clean_text(text):
     text = ' '.join(word for word in text.split() if word not in STOPWORDS) # delete stopwors from text
     return text
 
-text_df['text'] = text_df['text'].apply(clean_text)
-text_df['length'] = text_df['text'].apply(len)
+text_df['cleantext'] = text_df['text'].apply(clean_text)
+text_df['length'] = text_df['cleantext'].apply(len)
 text_df = text_df[text_df['length'] != 0]
 
-meta_df['abstract'] = meta_df['abstract'].apply(clean_text)
+meta_df['cleanabstract'] = meta_df['abstract'].apply(clean_text)
 
+# Add string columns to categories
+categories_df['string_categories'] = categories_df['categories'].apply(', '.join)
+categories_df['string_categories1'] = categories_df['string_categories'].apply(lambda x: CAT_TO_REPLACE_RE.sub('_',x))
+categories_df['string_categories2'] = categories_df['string_categories'].apply(lambda x: CAT_TO_REPLACE_RE.sub('',x))
 
 def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
     """
@@ -74,3 +80,4 @@ full_reduced_df = reduced_categories_df.merge(info_df, on='int_paper_id', how='i
 save_out(full_expanded_df, 'full_expanded_df')
 save_out(full_reduced_df, 'full_reduced_df')
 save_out(info_df, 'info_df')
+save_out(categories_df, 'categories_df')
