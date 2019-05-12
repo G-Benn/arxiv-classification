@@ -52,7 +52,6 @@ reduced_categories_df.to_pickle("final_src/reduced_categories_df.pkl")
 expanded_categories_df.to_pickle("final_src/expanded_categories_df.pkl")
 meta_df.to_pickle("final_src/meta_df.pkl")
 text_df.to_pickle("final_src/text_df.pkl")
-print('pickling completed')
 
 
 

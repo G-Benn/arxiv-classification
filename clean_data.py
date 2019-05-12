@@ -7,11 +7,11 @@ import re
 from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 
-text_df = pd.read_pickle('text_df_test.pkl')
-meta_df = pd.read_pickle('meta_df_test.pkl')
-categories_df = pd.read_pickle('categories_df_test.pkl')
-reduced_categories_df = pd.read_pickle('reduced_categories_df_test.pkl')
-expanded_categories_df = pd.read_pickle('expanded_categories_df_test.pkl')
+text_df = pd.read_pickle('final_src/text_df.pkl')
+meta_df = pd.read_pickle('final_src/meta_df.pkl')
+categories_df = pd.read_pickle('final_src/categories_df.pkl')
+reduced_categories_df = pd.read_pickle('final_src/reduced_categories_df.pkl')
+expanded_categories_df = pd.read_pickle('final_src/expanded_categories_df.pkl')
 
 # Remove the 1st row of each df that's there to hold the original shape.
 text_df.drop(text_df.index[0], inplace=True)
@@ -59,7 +59,7 @@ categories_df['string_categories'] = categories_df['categories'].apply(', '.join
 categories_df['string_categories1'] = categories_df['string_categories'].apply(lambda x: CAT_TO_REPLACE_RE.sub('_',x))
 categories_df['string_categories2'] = categories_df['string_categories'].apply(lambda x: CAT_TO_REPLACE_RE.sub('',x))
 
-def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=True):
+def save_out(df: pd.DataFrame, base_filename, pickle=True, hdf=False):
     """
     given the df and filename, save out to both a pickle and hdf file. This ensures that we don't lose access to the data at any point.
     """
@@ -77,7 +77,7 @@ info_df = text_df.merge(meta_df, on='int_paper_id', how='inner')
 full_expanded_df = expanded_categories_df.merge(info_df, on='int_paper_id', how='inner')
 full_reduced_df = reduced_categories_df.merge(info_df, on='int_paper_id', how='inner')
 
-save_out(full_expanded_df, 'full_expanded_df')
-save_out(full_reduced_df, 'full_reduced_df')
-save_out(info_df, 'info_df')
-save_out(categories_df, 'categories_df')
+save_out(full_expanded_df, 'final_src/clean_expanded_df')
+save_out(full_reduced_df, 'final_src/clean_reduced_df')
+save_out(info_df, 'final_src/clean_info_df')
+save_out(categories_df, 'final_src/clean_categories_df')
