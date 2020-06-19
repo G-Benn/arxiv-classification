@@ -240,3 +240,13 @@ TSWLatexianTemp*
 
 # generated if using elsarticle.cls
 *.spl
+
+# Source data folders
+*.7z
+/src
+
+#Pycharm
+.idea/
+
+#Jupyter
+.ipynb_checkpoints
