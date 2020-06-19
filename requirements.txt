@@ -1,0 +1,10 @@
+pandas
+numpy
+beautifulsoup4
+boto3
+matplotlib
+scipy
+scikit-learn
+nltk
+gensim
+tensorflow
