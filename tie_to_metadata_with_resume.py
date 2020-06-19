@@ -107,8 +107,7 @@ args = parser.parse_args()
 if args.setup:
     print('creating pickle and chunks')
     all_files = [f for f in os.listdir(os.getcwd()) if f.endswith('.txt')]
-    all_chunks = list(divide_chunks(all_files, 5)) #test with 5, final with 50
-    print(all_chunks[:10])
+    all_chunks = list(divide_chunks(all_files, 25)) #test with 5, final with 50
     with open('remaining_chunks.pkl', 'wb') as fp:
             pickle.dump(all_chunks, fp)
     print('File dumped! Exiting now.')
