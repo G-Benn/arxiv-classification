@@ -1,0 +1,2 @@
+# Results
+There was some initial work on this done back in the beginning but all the code here now should be considered legacy - I'll be taking what's useful from it and redoing it in a more sustainable way soon. More to come here!
